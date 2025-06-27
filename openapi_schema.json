@@ -1,0 +1,225 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Base.vn Candidates API",
+    "description": "API để lấy thông tin candidates từ Base.vn cho Custom GPT",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/candidates": {
+      "get": {
+        "summary": "Lấy danh sách candidates",
+        "description": "Lấy thông tin chi tiết về candidates từ một job opening cụ thể",
+        "operationId": "getCandidates",
+        "parameters": [
+          {
+            "name": "opening_id",
+            "in": "query",
+            "description": "ID của job opening (bắt buộc)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "9165"
+            }
+          },
+          {
+            "name": "stage_ids",
+            "in": "query",
+            "description": "Danh sách stage IDs, phân cách bằng dấu phẩy (tùy chọn)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "92822,92823"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách candidates thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "candidates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Candidate"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Tổng số candidates"
+                    },
+                    "opening_id": {
+                      "type": "string",
+                      "description": "ID của job opening"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Thông báo kết quả"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/job-openings": {
+      "get": {
+        "summary": "Lấy danh sách job openings",
+        "description": "Lấy tất cả job openings hiện đang active",
+        "operationId": "getJobOpenings",
+        "responses": {
+          "200": {
+            "description": "Danh sách job openings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "openings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/JobOpening"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stages": {
+      "get": {
+        "summary": "Lấy danh sách stages",
+        "description": "Lấy các giai đoạn tuyển dụng của một job opening",
+        "operationId": "getStages",
+        "parameters": [
+          {
+            "name": "opening_id",
+            "in": "query",
+            "description": "ID của job opening",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "9165"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách stages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stages": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Stage"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "opening_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Candidate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID của candidate"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tên ứng viên"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email liên lạc"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số điện thoại"
+          },
+          "cvs": {
+            "type": "string",
+            "description": "Link file CV"
+          },
+          "stage_id": {
+            "type": "string",
+            "description": "ID giai đoạn hiện tại"
+          },
+          "stage_name": {
+            "type": "string",
+            "description": "Tên giai đoạn hiện tại"
+          },
+          "candidate_link": {
+            "type": "string",
+            "description": "Link trực tiếp đến profile ứng viên"
+          }
+        }
+      },
+      "JobOpening": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID của job opening"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tên vị trí tuyển dụng"
+          }
+        }
+      },
+      "Stage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID của stage"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tên giai đoạn"
+          }
+        }
+      }
+    }
+  }
+} 
